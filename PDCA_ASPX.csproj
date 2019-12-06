@@ -49,24 +49,15 @@
       <HintPath>..\..\..\..\OneDrive - California Health Sciences University\Documents\ASP.NET AJAX Control Toolkit\Bin\AjaxControlToolkit.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.ReportingServices.Editions">
-      <HintPath>..\..\..\..\..\..\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\bin\Microsoft.ReportingServices.Editions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ReportingServices.ExcelRendering">
-      <HintPath>..\..\..\..\..\..\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\bin\Microsoft.ReportingServices.ExcelRendering.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ReportingServices.GaugeWebControl">
-      <HintPath>..\..\..\..\..\..\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\bin\Microsoft.ReportingServices.GaugeWebControl.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ReportingServices.ImageRendering">
-      <HintPath>..\..\..\..\..\..\Program Files\Microsoft SQL Server Reporting Services\SSRS\ReportServer\bin\Microsoft.ReportingServices.ImageRendering.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
@@ -127,12 +118,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdminPage.aspx" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Default.aspx" />
+    <Content Include="DepartmentEdit.aspx" />
+    <Content Include="DepartmentList.aspx" />
+    <Content Include="EndPointEdit.aspx" />
+    <Content Include="EndPointList.aspx" />
+    <Content Include="EntityEdit.aspx" />
+    <Content Include="EntityList.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -166,11 +164,17 @@
     <Content Include="images\numberpicker_up_pressed.9.png" />
     <Content Include="images\numberpicker_up_selected.9.png" />
     <Content Include="images\plus.png" />
+    <Content Include="InvalidUser.aspx" />
     <Content Include="PDCAEdit1.aspx" />
     <Content Include="PDCAField.Master" />
     <Content Include="AzureSQLPDCAFS_DSN.dsn" />
     <Content Include="PDCAPrint.aspx" />
-    <Content Include="Report1.aspx" />
+    <Content Include="PDCATypeEdit.aspx" />
+    <Content Include="PDCATypeList.aspx" />
+    <Content Include="PDCAUserEdit.aspx" />
+    <Content Include="PDCAUserList.aspx" />
+    <Content Include="PDCAUserTypeEdit.aspx" />
+    <Content Include="PDCAUserTypeList.aspx" />
     <Content Include="Report1.Master" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="PDCAField.aspx" />
@@ -211,6 +215,13 @@
     <Content Include="Site.Mobile.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminPage.aspx.cs">
+      <DependentUpon>AdminPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AdminPage.aspx.designer.cs">
+      <DependentUpon>AdminPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Data\AccreditationOrganization.cs" />
@@ -219,6 +230,7 @@
     <Compile Include="Data\AccreditationStandardsManager.cs" />
     <Compile Include="Data\Assessments.cs" />
     <Compile Include="Data\AssessmentsManager.cs" />
+    <Compile Include="Data\CheckNames.cs" />
     <Compile Include="Data\Entity.cs" />
     <Compile Include="Data\EntityManager.cs" />
     <Compile Include="Data\MimeTypes.cs" />
@@ -234,6 +246,7 @@
     <Compile Include="Data\PDCANotesManager.cs" />
     <Compile Include="Data\PDCATeam.cs" />
     <Compile Include="Data\PDCATeamManager.cs" />
+    <Compile Include="Data\PDCAUser.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -241,8 +254,57 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DepartmentEdit.aspx.cs">
+      <DependentUpon>DepartmentEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DepartmentEdit.aspx.designer.cs">
+      <DependentUpon>DepartmentEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DepartmentList.aspx.cs">
+      <DependentUpon>DepartmentList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DepartmentList.aspx.designer.cs">
+      <DependentUpon>DepartmentList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EndPointEdit.aspx.cs">
+      <DependentUpon>EndPointEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EndPointEdit.aspx.designer.cs">
+      <DependentUpon>EndPointEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EndPointList.aspx.cs">
+      <DependentUpon>EndPointList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EndPointList.aspx.designer.cs">
+      <DependentUpon>EndPointList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EntityEdit.aspx.cs">
+      <DependentUpon>EntityEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EntityEdit.aspx.designer.cs">
+      <DependentUpon>EntityEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="EntityList.aspx.cs">
+      <DependentUpon>EntityList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="EntityList.aspx.designer.cs">
+      <DependentUpon>EntityList.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="InvalidUser.aspx.cs">
+      <DependentUpon>InvalidUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="InvalidUser.aspx.designer.cs">
+      <DependentUpon>InvalidUser.aspx</DependentUpon>
     </Compile>
     <Compile Include="PDCAEdit1.aspx.cs">
       <DependentUpon>PDCAEdit1.aspx</DependentUpon>
@@ -286,14 +348,49 @@
     <Compile Include="PDCAPrint.aspx.designer.cs">
       <DependentUpon>PDCAPrint.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Report1.aspx.cs">
-      <DependentUpon>Report1.aspx</DependentUpon>
+    <Compile Include="PDCATypeEdit.aspx.cs">
+      <DependentUpon>PDCATypeEdit.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Report1.aspx.designer.cs">
-      <DependentUpon>Report1.aspx</DependentUpon>
+    <Compile Include="PDCATypeEdit.aspx.designer.cs">
+      <DependentUpon>PDCATypeEdit.aspx</DependentUpon>
     </Compile>
+    <Compile Include="PDCATypeList.aspx.cs">
+      <DependentUpon>PDCATypeList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDCATypeList.aspx.designer.cs">
+      <DependentUpon>PDCATypeList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PDCAUserEdit.aspx.cs">
+      <DependentUpon>PDCAUserEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDCAUserEdit.aspx.designer.cs">
+      <DependentUpon>PDCAUserEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PDCAUserList.aspx.cs">
+      <DependentUpon>PDCAUserList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDCAUserList.aspx.designer.cs">
+      <DependentUpon>PDCAUserList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PDCAUserTypeEdit.aspx.cs">
+      <DependentUpon>PDCAUserTypeEdit.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDCAUserTypeEdit.aspx.designer.cs">
+      <DependentUpon>PDCAUserTypeEdit.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="PDCAUserTypeList.aspx.cs">
+      <DependentUpon>PDCAUserTypeList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="PDCAUserTypeList.aspx.designer.cs">
+      <DependentUpon>PDCAUserTypeList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Report1.Master.cs">
       <DependentUpon>Report1.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

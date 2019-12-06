@@ -1,29 +1,26 @@
 ﻿using PDCA_ASPX.Data;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Configuration;
 using System.Web.UI.WebControls;
-using System.Drawing;
 
 namespace PDCA_ASPX
 {
     public partial class _Default : Page
     {
- 
-        private DataTable dataTable;        
+        private DataTable dataTable;
         private List<CheckBox> _CheckBoxes = new List<CheckBox>();
         private System.Web.UI.WebControls.Image sortImage = new System.Web.UI.WebControls.Image();
-        
+
         private string WCUSCAccreditation = "";
         private string COCAAccreditation = "";
         private string ACPEAccreditation = "";
         private string strConnectionstring = "";
+        private PDCAUser PDCATempUser = new PDCAUser();
         private string userName = System.Web.HttpContext.Current.User.Identity.Name;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -31,7 +28,25 @@ namespace PDCA_ASPX
             string[] WCUSCAccreditationList = WCUSCAccreditation.Split('|');
             string[] COCAAccreditationList = COCAAccreditation.Split('|');
             string[] ACPEAccreditationList = ACPEAccreditation.Split('|');
-            
+
+            //ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT UserName FROM Win32_ComputerSystem");
+            //ManagementObjectCollection collection = searcher.Get();
+            //string smusername = (string)collection.Cast<ManagementBaseObject>().First()["UserName"];
+            //this.lblUserName.Text = smusername + "  [--]  " + System.Security.Principal.WindowsIdentity.GetCurrent().Name+ "  |--|  " + System.Web.HttpContext.Current.User.Identity.Name + " -- " + Environment.UserDomainName + "  --  " + Environment.UserName;
+
+            PDCATempUser.VerifyCurrentUser();
+            if (PDCATempUser.PDCAUserGroupMember == "False")
+            {
+                Response.Redirect("Invaliduser.aspx");
+            }
+            else
+            {
+                Session["PDCAUser"] = PDCATempUser;
+                if (PDCATempUser.PDCAUserEntered == "False")
+                {
+                    PDCATempUser.Save_NewUser();
+                }
+            }
             strConnectionstring = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
             if (!IsPostBack)
             {
@@ -41,6 +56,8 @@ namespace PDCA_ASPX
             }
 
         }
+
+       
 
         public string SortDirectiona
         {
@@ -58,7 +75,6 @@ namespace PDCA_ASPX
         }
 
         private string _sortDirection;
-
 
         protected void PDCAGridView_Sorting(object sender, GridViewSortEventArgs e)
         {
@@ -156,6 +172,8 @@ namespace PDCA_ASPX
             sQuery += ", @ACPEaccreditationstandards  ='" + ACPEAccreditation + "'";
             sQuery += ", @COCAaccreditationstandards  ='" + COCAAccreditation + "'";
             sQuery += ", @WCUSCaccreditationstandards ='" + WCUSCAccreditation + "'";
+            sQuery += ", @NetworkUserID ='" + userName + "'";
+            //userName
             //sQuery += ", @@paSurvey ='" + this.ckSurveyResults.Checked.ToString() + "'";
             //sQuery += ", @@paFocus ='" + this.ckFocusGroupResults.Checked.ToString() + "'";
             //sQuery += ", @@paFormative ='" + this.ckFormative.Checked.ToString() + "'";
@@ -169,9 +187,7 @@ namespace PDCA_ASPX
             //sQuery += ", @@@paOther ='" + this.ckPeerReview.Checked.ToString() + "'";
             //sQuery += ", @DoMatch ='" + this.ckOther.Checked.ToString() + "'";
 
-
             dataTable = GetData(sQuery);
-
         }
 
         private DataTable GetData(string query)
@@ -179,7 +195,7 @@ namespace PDCA_ASPX
             string strConnString = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
             using (SqlConnection con = new SqlConnection(strConnString))
             {
-                con.ConnectionString = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
+                //con.ConnectionString = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.CommandText = query;
@@ -204,24 +220,19 @@ namespace PDCA_ASPX
 
         protected void BindGrid()
         {
-
             gvPDCAList.DataSource = dataTable;
             gvPDCAList.DataBind();
         }
 
         public void GetAccreditationCheckboxesLists()
         {
-
             WCUSCAccreditation = getCBString("ckWCUSCAccreditation");
             COCAAccreditation = getCBString("ckCOCAAccreditation");
             ACPEAccreditation = getCBString("ckACPEStandards");
         }
 
-
-
         public void SetCBChecked(string startsWith, string checkBoxSettings)
         {
-
             string[] cbCheckedlist = checkBoxSettings.Split('|');
 
             List<CheckBox> allControls = new List<CheckBox>();
@@ -235,7 +246,6 @@ namespace PDCA_ASPX
                 }
                 //     call for all controls of the page
             }
-
         }
 
         public string getCBString(string startsWith)
@@ -257,6 +267,7 @@ namespace PDCA_ASPX
             }
             return sReturn;
         }
+
         private void GetControlList<T>(ControlCollection controlCollection, List<T> resultCollection)
 where T : Control
         {
@@ -270,7 +281,6 @@ where T : Control
                     GetControlList(control.Controls, resultCollection);
             }
         }
-
 
         protected void PDCAGridView_DataBound(object sender, EventArgs e)
         {
@@ -313,7 +323,6 @@ where T : Control
             }
 
             GridViewRow srow = gvPDCAList.SelectedRow;
-
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
@@ -360,12 +369,8 @@ where T : Control
         //******************  Get and set the Accreditation Checkboxes
         //**************************************************************************
 
-
-
-
         public void ClearAccreditationCheckBoxes(string startsWith)
         {
-
             List<CheckBox> allControls = new List<CheckBox>();
             GetControlList<CheckBox>(Page.Controls, allControls);
             foreach (var childControl in allControls)
@@ -378,11 +383,5 @@ where T : Control
                 //     call for all controls of the page
             }
         }
-
-
-
-
-
-
     }
 }

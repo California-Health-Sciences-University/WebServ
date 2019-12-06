@@ -11,7 +11,7 @@ namespace PDCA_ASPX
 {
 
 
-    public partial class PDCAFieldEdit
+    public partial class PDCAUserTypeEdit
     {
 
         /// <summary>
@@ -42,24 +42,6 @@ namespace PDCA_ASPX
         protected global::System.Web.UI.WebControls.Table Table3;
 
         /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-
-        /// <summary>
-        /// lblTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitle;
-
-        /// <summary>
         /// Label4 control.
         /// </summary>
         /// <remarks>
@@ -69,13 +51,13 @@ namespace PDCA_ASPX
         protected global::System.Web.UI.WebControls.Label Label4;
 
         /// <summary>
-        /// lblFieldID control.
+        /// lblPDCAUserTypeID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFieldID;
+        protected global::System.Web.UI.WebControls.Label lblPDCAUserTypeID;
 
         /// <summary>
         /// Label5 control.
@@ -87,13 +69,13 @@ namespace PDCA_ASPX
         protected global::System.Web.UI.WebControls.Label Label5;
 
         /// <summary>
-        /// lblFieldName control.
+        /// txtName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFieldName;
+        protected global::System.Web.UI.WebControls.TextBox txtName;
 
         /// <summary>
         /// Label2 control.
@@ -112,15 +94,6 @@ namespace PDCA_ASPX
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDescription;
-
-        /// <summary>
-        /// HtmlEditorExtender8 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.HtmlEditorExtender HtmlEditorExtender8;
 
         /// <summary>
         /// btnSave control.

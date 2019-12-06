@@ -1,21 +1,21 @@
 ﻿using PDCA_ASPX.Data;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using System.Configuration;
 using System.Web.UI.WebControls;
-
 
 namespace PDCA_ASPX
 {
     public partial class PDCAEdit1 : System.Web.UI.Page
     {
         private SqlConnection connection = new SqlConnection();
+        private PDCAUser PDCATempUser = new PDCAUser();
 
         //public string strConnectionstring = "Data Source = 4QLJWK2; Initial Catalog = PDCAFS; Integrated Security = True";
         public string strConnectionstring = "";
@@ -27,22 +27,21 @@ namespace PDCA_ASPX
         private string WCUSCAccreditation = "";
         private string COCAAccreditation = "";
         private string ACPEAccreditation = "";
-        private string PDCAFile = "";
-
-        private DataSet ds;
+        private string PDCAFile = "";        
         private DataTable dataTable;
         private System.Web.UI.WebControls.Image sortImage = new System.Web.UI.WebControls.Image();
-        private string sortDirection = "ASC";
-        private Boolean NotesExpansion=false;
+        
+        private Boolean NotesExpansion = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            PDCATempUser = (PDCAUser)Session["PDCAUser"];
             string[] WCUSCAccreditationList = WCUSCAccreditation.Split('|');
             string[] COCAAccreditationList = COCAAccreditation.Split('|');
             string[] ACPEAccreditationList = ACPEAccreditation.Split('|');
             _CheckBoxes = new List<CheckBox>();
             _TextBoxes = new List<TextBox>();
-            strConnectionstring = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
+            strConnectionstring = PDCATempUser.strConnectionstring;
             OpenConnection();
             if (IsPostBack)
             {
@@ -74,8 +73,13 @@ namespace PDCA_ASPX
                 LoadNoteFieldDescriptions();
                 LoadGridData();
                 BindGrid();
-                NotesExpansion = false;                
+                NotesExpansion = false;
+                LoadRoutingLists();
                 //SetNotesExpansion(NotesExpansion);
+            }
+            if (PDCATempUser.UserRole == "Reviewer")
+            {
+                LockAllControls();
             }
         }
 
@@ -95,6 +99,7 @@ namespace PDCA_ASPX
             this.lblErrorStrengths.Visible = false;
             this.lblErrorSubjectofAssessment.Visible = false;
         }
+
         private void OpenConnection()
         {
             if (connection.State != ConnectionState.Open)
@@ -123,9 +128,7 @@ where T : Control
         {
             OpenConnection();
             string sQuery = "PDCA_select ";
-
             sQuery += "@pdcaid =" + this.txtPDCAID.Text + " ";
-
             using (connection)
             {
                 SqlCommand command = new SqlCommand(sQuery, connection);
@@ -138,52 +141,53 @@ where T : Control
                         this.lblPCDAID.Text = reader.GetInt32(0).ToString();
                         this.lblDate.Text = reader.GetDateTime(1).ToString();
 
-                        this.txtOriginatorName.Text = reader.GetString(3);
-                        this.txtDepartment.Text = reader.GetString(5);
-                        this.txtTitle.Text = reader.GetString(6);
-                        this.txtDescription.Text = reader.GetString(7);
+                        //this.txtOriginatorName.Text = reader.GetString(11);
+                        //this.txtDepartment.Text = reader.GetString(5);
+                        this.ddDepartment.SelectedValue = reader.GetInt32(6).ToString();
+                        this.txtTitle.Text = reader.GetString(7);
+                        this.txtDescription.Text = reader.GetString(8);
 
-                        this.ddSchoolYear.SelectedValue = reader.GetInt32(8).ToString();
-                        this.lblSchoolYearID.Text = reader.GetInt32(9).ToString();
-                        this.lblStatus.Text = reader.GetString(10);
+                        this.ddSchoolYear.SelectedValue = reader.GetInt32(9).ToString();
+                        this.lblSchoolYearID.Text = reader.GetInt32(10).ToString();
+                        this.lblStatus.Text = reader.GetString(11);
 
                         //-- submissionteam
-                        this.ckSurveyResults.Checked = Convert.ToBoolean(reader.GetString(12));
-                        this.ckFocusGroupResults.Checked = Convert.ToBoolean(reader.GetString(13));
-                        this.ckFormative.Checked = Convert.ToBoolean(reader.GetString(14));
-                        this.ckProgramOutcome.Checked = Convert.ToBoolean(reader.GetString(15));
-                        this.ckInputData.Checked = Convert.ToBoolean(reader.GetString(16));
-                        this.ckExternalReview.Checked = Convert.ToBoolean(reader.GetString(17));
-                        this.ckTests.Checked = Convert.ToBoolean(reader.GetString(18));
-                        this.ckReview.Checked = Convert.ToBoolean(reader.GetString(19));
-                        this.ckCLO.Checked = Convert.ToBoolean(reader.GetString(20));
-                        this.ckPlan.Checked = Convert.ToBoolean(reader.GetString(21));
-                        this.ckPeerReview.Checked = Convert.ToBoolean(reader.GetString(22));
-                        this.ckOther.Checked = Convert.ToBoolean(reader.GetString(23));
-                        if (reader.GetString(24).Contains("CHSU"))
+                        this.ckSurveyResults.Checked = Convert.ToBoolean(reader.GetString(13));
+                        this.ckFocusGroupResults.Checked = Convert.ToBoolean(reader.GetString(14));
+                        this.ckFormative.Checked = Convert.ToBoolean(reader.GetString(15));
+                        this.ckProgramOutcome.Checked = Convert.ToBoolean(reader.GetString(16));
+                        this.ckInputData.Checked = Convert.ToBoolean(reader.GetString(17));
+                        this.ckExternalReview.Checked = Convert.ToBoolean(reader.GetString(18));
+                        this.ckTests.Checked = Convert.ToBoolean(reader.GetString(19));
+                        this.ckReview.Checked = Convert.ToBoolean(reader.GetString(20));
+                        this.ckCLO.Checked = Convert.ToBoolean(reader.GetString(21));
+                        this.ckPlan.Checked = Convert.ToBoolean(reader.GetString(22));
+                        this.ckPeerReview.Checked = Convert.ToBoolean(reader.GetString(23));
+                        this.ckOther.Checked = Convert.ToBoolean(reader.GetString(24));
+                        if (reader.GetString(25).Contains("CHSU"))
                         {
                             this.ckCHSU.Checked = true;
                         }
-                        if (reader.GetString(24).Contains("COP"))
+                        if (reader.GetString(25).Contains("COP"))
                         {
                             this.ckCOP.Checked = true;
                         }
-                        if (reader.GetString(24).Contains("COM"))
+                        if (reader.GetString(25).Contains("COM"))
                         {
                             this.ckCOM.Checked = true;
                         }
-                        if (reader.GetString(24).Contains("Unsure"))
+                        if (reader.GetString(25).Contains("Unsure"))
                         {
                             this.ckUnsure.Checked = true;
                         }
-                        WCUSCAccreditation = reader.GetString(25);
-                        COCAAccreditation = reader.GetString(26);
-                        ACPEAccreditation = reader.GetString(27);
+                        WCUSCAccreditation = reader.GetString(26);
+                        COCAAccreditation = reader.GetString(27);
+                        ACPEAccreditation = reader.GetString(28);
                         SetAccreditationCheckboxes();
                         if (lblStatus.Text == "Submitted")
                         {
                             btnSaveContinue.Enabled = false;
-                            if (Session["UserType"].ToString() == "Approver")
+                            if (PDCATempUser.UserRole == "Approver")
                             {
                                 btnSaveSubmit.Text = "Save as Complete";
                             }
@@ -201,6 +205,8 @@ where T : Control
                 reader.Close();
                 LoadNoteFieldDescriptions();
                 LoadNoteFields();
+                LoadRoutingLists();
+                LoadPDCATeamList();
             }
         }
 
@@ -211,7 +217,8 @@ where T : Control
             this.lblDate.Enabled = false;
 
             this.txtOriginatorName.Enabled = false;
-            this.txtDepartment.Enabled = false;
+            //this.txtDepartment.Enabled = false;
+            this.ddDepartment.Enabled = false;
             this.txtTitle.Enabled = false;
             this.txtDescription.Enabled = false;
 
@@ -247,6 +254,7 @@ where T : Control
             this.btnSaveContinue.Visible = false;
             if (this.lblStatus.Text == "Complete")
             {
+                this.btnUploadDocument.Visible = false;
                 this.btnSaveSubmit.Visible = false;
             }
         }
@@ -259,7 +267,6 @@ where T : Control
             {
                 string sQuery = "PDCAFields_select @pdcafieldid= " + i.ToString();
                 commanda.CommandText = sQuery;
-
                 SqlDataReader readera = commanda.ExecuteReader();
                 if (readera.HasRows)
                 {
@@ -301,10 +308,6 @@ where T : Control
                         {
                             this.litAdditionalCommentsDescription.Text = readera.GetString(2);
                         }
-                        if (i == 10)
-                        {
-                            this.litReportDescription.Text = readera.GetString(2);
-                        }
                     }
                 }
                 readera.Close();
@@ -321,7 +324,7 @@ where T : Control
 
         public int ValidatePage()
         {
-            string sreturn = "";
+            
 
             List<vPage> errors = new List<vPage>();
             lblErrorAdditionalComments.Text = "";
@@ -372,11 +375,7 @@ where T : Control
                 errors.Add(new vPage() { controlname = "txtPlan", fieldtitle = "Plan", errormessage = "Plan must be blank if N/A is checked." });
                 lblErrorPlan.Text = "Plan must be blank if N/A is checked.";
             }
-            if (this.ckReportNotApplicable.Checked == true && this.txtReport.Text.Trim() != "")
-            {
-                errors.Add(new vPage() { controlname = "txtReport", fieldtitle = "Report", errormessage = "Report must be blank if N/A is checked." });
-                lblErrorReport.Text = "Report must be blank if N/A is checked.";
-            }
+
             if (this.ckStrengthsNotApplicable.Checked == true && this.txtStrengths.Text.Trim() != "")
             {
                 errors.Add(new vPage() { controlname = "txtStrengths", fieldtitle = "Strengths", errormessage = "Strengths must be blank if N/A is checked." });
@@ -423,11 +422,7 @@ where T : Control
                 errors.Add(new vPage() { controlname = "txtPlan", fieldtitle = "Plan", errormessage = "Plan must be entered or N/A must be checked." });
                 lblErrorPlan.Text = "Plan must be entered or N/A must be checked.";
             }
-            if (this.ckReportNotApplicable.Checked == false && this.txtReport.Text.Trim() == "")
-            {
-                errors.Add(new vPage() { controlname = "txtReport", fieldtitle = "Report", errormessage = "Report Must be Submitted must be entered or N/A must be checked." });
-                lblErrorReport.Text = "Report Must be Submitted must be entered or N/A must be checked.";
-            }
+
             if (this.ckStrengthsNotApplicable.Checked == false && this.txtStrengths.Text.Trim() == "")
             {
                 errors.Add(new vPage() { controlname = "txtStrengths", fieldtitle = "Strengths", errormessage = "Strengths must be entered or N/A must be checked." });
@@ -471,7 +466,6 @@ where T : Control
             this.txtDo.Text = GetNote(7);
             this.txtCheck.Text = GetNote(8);
             this.txtAdditionalComments.Text = GetNote(9);
-            this.txtReport.Text = GetNote(10);
         }
 
         private string GetNote(Int32 fieldID)
@@ -494,11 +488,33 @@ where T : Control
             return sReturn;
         }
 
+        private string LoadDepartmentList()
+        {
+            OpenConnection();
+            string sReturn = "";
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "Department_select";            
+            commanda.CommandText = sQuery;
+            SqlDataReader readera = commanda.ExecuteReader();
+            if (readera.HasRows)
+            {
+                while (readera.Read())
+                {
+                    ListItem l2 = new ListItem();
+                    l2.Value = readera.GetInt32(0).ToString();
+                    l2.Text = readera.GetString(1);
+                    this.ddDepartment.Items.Add(l2);
+                    this.ddDepartment.SelectedValue = "";
+                }
+            }
+            readera.Close();
+            return sReturn;
+        }
         private void SaveData(string strStatus)
         {
             OpenConnection();
             string SQLQuery = "";
-            string SQLQueryNotes = "";            
+            string SQLQueryNotes = "";
             //connection.Open();
             if (this.txtPDCAID.Text == "0")
             {
@@ -514,7 +530,8 @@ where T : Control
                 SQLQuery += " ,@status='" + strStatus + "' ";
                 SQLQueryNotes = "PDCANotes_update ";
             }
-            SQLQuery += ", @Department= '" + this.txtDepartment.Text.Replace("'", "''") + "'";
+            //SQLQuery += ", @DepartmentID= '" + this.txtDepartment.Text.Replace("'", "''") + "'";
+            SQLQuery += ", @DepartmentID=" + this.ddDepartment.SelectedValue ;
             SQLQuery += ", @Title= '" + this.txtTitle.Text.Replace("'", "''") + "'";
             string Ent = "";
             if (this.ckCHSU.Checked)
@@ -535,6 +552,7 @@ where T : Control
             }
             SQLQuery += ", @entity= '" + Ent + "'";
             SQLQuery += ", @Description= '" + this.txtDescription.Text.Replace("'", "''") + "'";
+            //SQLQuery += ", @submissionteam= '" + this.txtOriginatorName.Text.Replace("'", "''") + "'";
 
             SQLQuery += ", @ckCHSU= '" + this.ckCHSU.Checked + "'";
             SQLQuery += ", @ckCOM= '" + this.ckCOM.Checked.ToString() + "'";
@@ -585,7 +603,9 @@ where T : Control
             SaveNotes(7, SQLQueryNotes, this.txtDo.Text);
             SaveNotes(8, SQLQueryNotes, this.txtCheck.Text);
             SaveNotes(9, SQLQueryNotes, this.txtAdditionalComments.Text);
-            SaveNotes(10, SQLQueryNotes, this.txtReport.Text);
+
+            SaveRoutingLists();
+            SavePDCATeam();
             //connection.Close();
             ClearErrors();
         }
@@ -595,9 +615,7 @@ where T : Control
             string SQLQueryNotesFull = Qry + " @pdcaid = " + this.txtPDCAID.Text + " ";
             SQLQueryNotesFull += ", @PDCAFieldID=" + fieldID;
             SQLQueryNotesFull += ", @Note='" + Notes.Replace("'", "''") + "'";
-            SqlCommand command10 = new SqlCommand(
-                 SQLQueryNotesFull,
-                 connection);
+            SqlCommand command10 = new SqlCommand(SQLQueryNotesFull,connection);
             command10.ExecuteNonQuery();
         }
 
@@ -631,7 +649,7 @@ where T : Control
         {
             // print the pdca
             //PrintPDCA();
-            Response.Redirect("PDCAPrint.aspx?txtPDCAID=" + this.txtPDCAID.Text);
+            Response.Redirect("PDCAPrint.aspx?PDCAID=" + this.txtPDCAID.Text);
         }
 
         protected void btnSaveSubmit_Click(object sender, EventArgs e)
@@ -654,21 +672,20 @@ where T : Control
 
         public void SetAccreditationCheckboxes()
         {
-            SetCBChecked( "ckWCUSCAccreditation", WCUSCAccreditation);
-            SetCBChecked( "ckCOCAAccreditation", COCAAccreditation);
-            SetCBChecked( "ckACPEStandards", ACPEAccreditation);
+            SetCBChecked("ckWCUSCAccreditation", WCUSCAccreditation);
+            SetCBChecked("ckCOCAAccreditation", COCAAccreditation);
+            SetCBChecked("ckACPEStandards", ACPEAccreditation);
         }
 
         public void GetAccreditationCheckboxesLists()
         {
-               WCUSCAccreditation = getCBString("ckWCUSCAccreditation");
+            WCUSCAccreditation = getCBString("ckWCUSCAccreditation");
             COCAAccreditation = getCBString("ckCOCAAccreditation");
             ACPEAccreditation = getCBString("ckACPEStandards");
         }
 
-                public void SetCBChecked(string startsWith, string checkBoxSettings )
+        public void SetCBChecked(string startsWith, string checkBoxSettings)
         {
-
             string[] cbCheckedlist = checkBoxSettings.Split('|');
 
             List<CheckBox> allControls = new List<CheckBox>();
@@ -682,7 +699,6 @@ where T : Control
                 }
                 //     call for all controls of the page
             }
-            
         }
 
         public string getCBString(string startsWith)
@@ -704,8 +720,6 @@ where T : Control
             }
             return sReturn;
         }
-       
-
 
         //******************** gvDocuments Code ************************************************
         protected void gvDocuments_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -780,11 +794,13 @@ where T : Control
             dataTable = GetDocumentData(sQuery);
         }
 
-        private  DataTable GetDocumentData(string query)
+        private DataTable GetDocumentData(string query)
         {
             //string strConnString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
             //string strConnString = "Data Source = 4QLJWK2; Initial Catalog = PDCAFS; Integrated Security = True";
-            string strConnString = Session["Connstr"].ToString();
+
+            //string strConnString = ConfigurationManager.ConnectionStrings["dbconnection"].ConnectionString;
+            string strConnString = PDCATempUser.strConnectionstring;
             using (SqlConnection con = new SqlConnection(strConnString))
             {
                 using (SqlCommand cmd = new SqlCommand())
@@ -944,6 +960,7 @@ where T : Control
                         //lblResults.Text = "Upload status: File uploaded!";
                         this.txtDocumentTitle.Text = "";
                         this.txtDocumentDescription.Text = "";
+                        ClearErrors();
                         //this.fuPDCADocument. = "";
                         LoadGridData();
                         BindGrid();
@@ -1054,7 +1071,7 @@ where T : Control
             BindGrid();
         }
 
-        private void SetNotesExpansion (Boolean xsetting)
+        private void SetNotesExpansion(Boolean xsetting)
         {
             this.CollapsiblePanelExtenderAreasForImprovement.Collapsed = xsetting;
             this.CollapsiblePanelExtenderAssessments.Collapsed = xsetting;
@@ -1062,16 +1079,244 @@ where T : Control
             this.CollapsiblePanelExtenderCheck.Collapsed = xsetting;
             this.CollapsiblePanelExtenderInsights.Collapsed = xsetting;
             this.CollapsiblePanelExtenderPlan.Collapsed = xsetting;
-            this.CollapsiblePanelExtenderReport.Collapsed = xsetting;
+            //this.CollapsiblePanelExtenderReport.Collapsed = xsetting;
             this.CollapsiblePanelExtenderStrengths.Collapsed = xsetting;
             this.CollapsiblePanelExtenderSubjectofAssessment.Collapsed = xsetting;
-
         }
+
         protected void btnExpandNotes_Click(object sender, EventArgs e)
         {
             NotesExpansion = true;
             SetNotesExpansion(NotesExpansion);
+        }
 
+        private void SaveRoutingLists()
+        {
+            // clear out the existing list
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "PDCAClearEndpoints @pdcaid=" + this.lblPCDAID.Text;
+            commanda.CommandText = sQuery;
+            commanda.CommandType = CommandType.Text;
+            SqlDataReader readera = commanda.ExecuteReader();
+            readera.Close();
+            for (int i = 1; i <= 4; i++)
+            {
+                SaveRoutingList(i);
+            }
+        }
+
+        protected void SaveRoutingList(int iEntityID)
+        {
+            CheckBoxList cb1 = new CheckBoxList();
+            switch (iEntityID)
+            {
+                case 1:
+                    cb1 = this.ckblCOP;
+                    break;
+
+                case 2:
+                    cb1 = this.ckblCOM;
+                    break;
+
+                case 3:
+                    cb1 = this.ckblCHSU;
+                    break;
+
+                case 4:
+                    cb1 = this.ckblOther;
+                    break;
+            }
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "";
+            foreach (ListItem item1 in cb1.Items)
+            {
+                if (item1.Selected == true)
+                {
+                    commanda = new SqlCommand("", connection);
+                    sQuery = "PDCAEndpoint_insert @pdcaid=" + this.lblPCDAID.Text;
+                    sQuery += " , @endpointid=" + item1.Value;
+                    commanda.CommandText = sQuery;
+                    SqlDataReader readera = commanda.ExecuteReader();
+                    readera.Close();
+                }
+            }
+        }
+
+        protected void LoadRoutingLists()
+        {
+            for (int i = 1; i <= 4; i++)
+            {
+                LoadRoutingList(i);
+            }
+        }
+
+        private string LoadRoutingList(int iEntityID)
+        {
+            CheckBoxList cb1 = new CheckBoxList();
+            switch (iEntityID)
+            {
+                case 1:
+                    cb1 = this.ckblCOP;
+                    break;
+
+                case 2:
+                    cb1 = this.ckblCOM;
+                    break;
+
+                case 3:
+                    cb1 = this.ckblCHSU;
+                    break;
+
+                case 4:
+                    cb1 = this.ckblOther;
+                    break;
+            }
+
+            OpenConnection();
+            string sReturn = "";
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "PDCAEndpoint_Select @pdcaid=" + this.lblPCDAID.Text;
+            sQuery += " , @entityid=" + iEntityID.ToString();
+            commanda.CommandText = sQuery;
+            commanda.CommandType = CommandType.Text;
+            SqlDataReader readera = commanda.ExecuteReader();
+            cb1.Items.Clear();
+
+            if (readera.HasRows)
+            {
+                while (readera.Read())
+                {
+                    ListItem item1 = new ListItem();
+                    item1.Text = readera.GetString(6);
+                    item1.Value = readera.GetInt32(2).ToString();
+                    item1.Selected = readera.GetBoolean(7);
+                    cb1.Items.Add(item1);
+                }
+            }
+            readera.Close();
+            return sReturn;
+        }
+
+
+
+        protected void btnCheckNames_Click(object sender, EventArgs e)
+        {
+            PDCAUser P1 = new PDCAUser();
+            DataList l1 = new DataList();
+            string strLeftovers = "";
+            string NameTrim = "";
+            string strError = "";
+            string[] nameList = this.txtOriginatorName.Text.Split(';');
+            lstNameError.Items.Clear();
+            foreach (string Name in nameList)
+            {
+                NameTrim = Name.Trim();
+                P1.VerifyUser(NameTrim);
+                if (P1.PDCAUserGroupMember == "True")
+                {
+                    if (P1.PDCAUserEntered == "False")
+                    {
+                        // add to PCDAUsers
+                        P1.Save_NewUser();
+                    }
+
+                    // add to displayed member list
+                    ListItem la1 = new ListItem();
+                    la1.Value = P1.PDCAUserID.ToString();
+                    la1.Text = NameTrim;
+                    this.lstPDCATeam.Items.Add(la1);
+
+                    // add to PDCATeam on PDCA Save
+                }
+                else
+                {
+                    //add to error list
+                    strError = NameTrim + " is not a member of PDCAUsers and cannot be added.";
+                    //add ton uncleaned string
+                    ListItem l3 = new ListItem();
+                    l3.Text = strError;
+                    this.lstNameError.Items.Add(l3);
+                    strLeftovers += NameTrim + "; ";
+                }
+            }
+            // parse txtname contents
+            //verify each name
+            //determine if member of pdcausers
+            //    if not, display in error message list
+            //if member of PDCAUsers add name to list
+            //delete each found entry from text field
+            //display what remains in the text box with error messages
+            this.txtOriginatorName.Text = strLeftovers;
+        }
+
+        protected void LoadPDCATeamList()
+        {
+            OpenConnection();
+            string sReturn = "";
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "PDCATeam_select @pdcaid=" + txtPDCAID.Text;
+            
+            commanda.CommandText = sQuery;
+            SqlDataReader readera = commanda.ExecuteReader();
+            if (readera.HasRows)
+            {
+                while (readera.Read())
+                {
+                    //sReturn = readera.GetString(12);
+                    // add to displayed member list
+                    ListItem la1 = new ListItem();
+                    la1.Value = readera.GetString(2);
+                    la1.Text = readera.GetString(5) + " - " + readera.GetString(4)+", " + readera.GetString(3);
+                    this.lstPDCATeam.Items.Add(la1);
+                }
+            }
+            readera.Close();
+            
+         
+        }
+        protected void LoadPDCAEndPointist()
+        {
+            OpenConnection();
+            string sReturn = "";
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "PDCAEndpoint_select @pdcaid=" + txtPDCAID.Text;
+            sQuery += ", @userid=" + PDCATempUser.PDCAUserID;
+            commanda.CommandText = sQuery;
+            SqlDataReader readera = commanda.ExecuteReader();
+            if (readera.HasRows)
+            {
+                while (readera.Read())
+                {
+                    //sReturn = readera.GetString(12);
+                    // add to displayed member list
+                    ListItem la1 = new ListItem();
+                    la1.Value = readera.GetString(0);
+                    la1.Text = readera.GetString(6) + "- " + readera.GetString(7) ;                 
+                        la1.Enabled = (readera.GetString(7) != "Review Complete");                 
+                    //la1.Selected = Convert.ToBoolean(readera.GetString(7));
+                    this.ckblEndPointStatus.Items.Add(la1);
+                }
+            }
+            readera.Close();
+
+
+        }
+        protected void SavePDCATeam()
+        {
+            SqlCommand commanda = new SqlCommand("", connection);
+            string sQuery = "";
+            foreach (ListItem item1 in this.lstPDCATeam.Items)
+            {
+                if (item1.Selected == true)
+                {
+                    commanda = new SqlCommand("", connection);
+                    sQuery = "PDCATeam_insert @pdcaid=" + this.lblPCDAID.Text;
+                    sQuery += " , @userid=" + item1.Value;
+                    commanda.CommandText = sQuery;
+                    SqlDataReader readera = commanda.ExecuteReader();
+                    readera.Close();
+                }
+            }
         }
     }
 }

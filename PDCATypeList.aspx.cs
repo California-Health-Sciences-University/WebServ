@@ -11,10 +11,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-
 namespace PDCA_ASPX
 {
-    public partial class PDCAFieldList : System.Web.UI.Page
+    public partial class PDCATypeList : System.Web.UI.Page
     {
         public string strConnString = "";
         private PDCAUser PDCATempUser = new PDCAUser();
@@ -30,9 +29,9 @@ namespace PDCA_ASPX
 
         private void LoadGridData()
         {
-            string sQuery = "PDCAFields_select ";
-            gvPDCAFieldList.DataSource = GetData(sQuery);
-            gvPDCAFieldList.DataBind();
+            string sQuery = "PDCAType_select ";
+            gvPDCATypeList.DataSource = GetData(sQuery);
+            gvPDCATypeList.DataBind();
         }
 
         private DataTable GetData(string query)
@@ -83,41 +82,41 @@ namespace PDCA_ASPX
             }
         }
 
-        protected void PDCAFieldGridView_DataBound(object sender, EventArgs e)
+        protected void PDCATypeGridView_DataBound(object sender, EventArgs e)
         {
-            for (int i = 0; i < gvPDCAFieldList.Rows.Count; i++)
+            for (int i = 0; i < gvPDCATypeList.Rows.Count; i++)
             {
                 // Ignore values that cannot be cast as integer.
                 try
                 {
-                    if ((int)gvPDCAFieldList.DataKeys[i].Value == (int)ViewState["SelectedKey"])
-                        gvPDCAFieldList.SelectedIndex = i;
+                    if ((int)gvPDCATypeList.DataKeys[i].Value == (int)ViewState["SelectedKey"])
+                        gvPDCATypeList.SelectedIndex = i;
                 }
                 catch { }
             }
         }
 
-        protected void PDCAFieldGridView_Sorting(object sender, GridViewSortEventArgs e)
+        protected void PDCATypeGridView_Sorting(object sender, GridViewSortEventArgs e)
         {
-            gvPDCAFieldList.SelectedIndex = -1;
+            gvPDCATypeList.SelectedIndex = -1;
         }
 
         protected void grdData_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            gvPDCAFieldList.PageIndex = e.NewPageIndex;
+            gvPDCATypeList.PageIndex = e.NewPageIndex;
             LoadGridData();
         }
 
-        protected void gvPDCAFieldList_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvPDCATypeList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (gvPDCAFieldList.SelectedIndex >= 0)
-                ViewState["SelectedKey"] = gvPDCAFieldList.SelectedValue;
+            if (gvPDCATypeList.SelectedIndex >= 0)
+                ViewState["SelectedKey"] = gvPDCATypeList.SelectedValue;
             else
                 ViewState["SelectedKey"] = null;
-            foreach (GridViewRow row1 in gvPDCAFieldList.Rows)
+            foreach (GridViewRow row1 in gvPDCATypeList.Rows)
             {
                 ImageButton IB2 = row1.FindControl("ClickImage") as ImageButton;
-                if (row1 == gvPDCAFieldList.SelectedRow)
+                if (row1 == gvPDCATypeList.SelectedRow)
                 {
                     IB2.ImageUrl = "~/images/btn_check_on_selected.png";
                 }
@@ -128,7 +127,7 @@ namespace PDCA_ASPX
                 }
             }
 
-            GridViewRow srow = gvPDCAFieldList.SelectedRow;
+            GridViewRow srow = gvPDCATypeList.SelectedRow;
             //ImageButton IB1 = srow.FindControl("ClickImage") as ImageButton;
             //IB1.ImageUrl = "~/images/btn_check_on_selected.png";
             //string customerId = gvSONISStudents.DataKeys[e.Row.RowIndex].Value.ToString();
@@ -145,7 +144,5 @@ namespace PDCA_ASPX
         {
             LoadGridData();
         }
-
-        
     }
 }

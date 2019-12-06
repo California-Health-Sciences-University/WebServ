@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PDCA_ASPX {
-    
-    
-    public partial class PDCAField1 {
-        
+namespace PDCA_ASPX
+{
+
+
+    public partial class PDCAField1
+    {
+
         /// <summary>
         /// head control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
-        
+
         /// <summary>
         /// form1 control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-        
+
         /// <summary>
         /// Table2 control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Table Table2;
-        
+
         /// <summary>
         /// Image1 control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image Image1;
-        
+
         /// <summary>
         /// Label1 control.
         /// </summary>
@@ -56,7 +58,16 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label1;
-        
+
+        /// <summary>
+        /// lblWelcomeUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblWelcomeUser;
+
         /// <summary>
         /// Table1 control.
         /// </summary>
@@ -65,7 +76,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Table Table1;
-        
+
         /// <summary>
         /// LinkButton1 control.
         /// </summary>
@@ -74,7 +85,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton1;
-        
+
         /// <summary>
         /// LinkButton2 control.
         /// </summary>
@@ -83,7 +94,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton2;
-        
+
         /// <summary>
         /// tcPDCAFieldList control.
         /// </summary>
@@ -92,7 +103,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TableCell tcPDCAFieldList;
-        
+
         /// <summary>
         /// LinkButton3 control.
         /// </summary>
@@ -101,7 +112,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton3;
-        
+
         /// <summary>
         /// TableCell1 control.
         /// </summary>
@@ -110,7 +121,7 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TableCell TableCell1;
-        
+
         /// <summary>
         /// lblUserName control.
         /// </summary>
@@ -119,7 +130,25 @@ namespace PDCA_ASPX {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUserName;
-        
+
+        /// <summary>
+        /// TableCell2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TableCell TableCell2;
+
+        /// <summary>
+        /// BulletedListOfGroups control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox BulletedListOfGroups;
+
         /// <summary>
         /// MainContent control.
         /// </summary>

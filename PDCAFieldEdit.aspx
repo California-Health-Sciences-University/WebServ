@@ -83,5 +83,5 @@
         </asp:TableRow>
     </asp:Table>
 
-    <asp:Table ID="Table2" runat="server"></asp:Table>
+    
 </asp:Content>

@@ -42,6 +42,11 @@
                         <asp:Label ID="Label1" runat="server" Font-Bold="true" ForeColor="White" Font-Size="X-Large" Font-Names="Arial" Text="Assessment and Continuous Quality Improvement"></asp:Label>
                     </asp:TableCell>
                 </asp:TableRow>
+                                <asp:TableRow runat="server" BorderWidth="1" BorderColor="Black" BorderStyle="Solid">
+                    <asp:TableCell runat="server" HorizontalAlign="Center" BorderColor="Black" BorderStyle="Solid" BackColor="Maroon">
+                        <asp:Label ID="lblWelcomeUser" runat="server" Font-Bold="true" ForeColor="White" Font-Size="Large" Font-Names="Arial" Text="Welcome: "></asp:Label>
+                    </asp:TableCell>
+                </asp:TableRow>
             </asp:Table>
 
             <asp:Table ID="Table1" runat="server" Width="100%" BorderColor="Black" BorderStyle="Solid">
@@ -53,11 +58,15 @@
                         <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/PDCAEdit1.aspx" Font-Bold="true" Font-Size="X-Large">Create New SII PDCA</asp:LinkButton>
                     </asp:TableCell>
                     <asp:TableCell runat="server" HorizontalAlign="Center" ID="tcPDCAFieldList" BorderColor="Black" BorderStyle="Solid">
-                        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/PDCAFieldList.aspx" Font-Bold="true" Font-Size="X-Large">Edit Field Descriptions</asp:LinkButton>
+                        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/AdminPage.aspx" Font-Bold="true" Font-Size="X-Large">Administration</asp:LinkButton>
                     </asp:TableCell>
-                    <asp:TableCell runat="server" HorizontalAlign="Center" ID="TableCell1" BorderColor="Black" BorderStyle="Solid">
-                        <asp:Label ID="lblUserName" runat="server" Text="Label"></asp:Label>
+                    <asp:TableCell runat="server" HorizontalAlign="Center" ID="TableCell1" BorderColor="Black" BorderStyle="Solid" Visible="false">
+                        <asp:Label ID="lblUserName" runat="server" Text="Label"></asp:Label><br />                                                
+                        
                     </asp:TableCell>
+                        <asp:TableCell runat="server" HorizontalAlign="Center" ID="TableCell2" BorderColor="Black" BorderStyle="Solid" Visible="false">
+                            <asp:ListBox ID="BulletedListOfGroups" runat="server"></asp:ListBox>
+                            </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>
             <asp:ContentPlaceHolder ID="MainContent" runat="server">

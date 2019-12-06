@@ -4,7 +4,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-
+    <asp:Label ID="lblUserName" runat="server" Text="Label" Visible="false"></asp:Label>
     <asp:Table Width="100%" BorderColor="Black" BorderStyle="Solid" Font-Bold="true" runat="server" CellPadding="10" BackColor="lightgrey">
         <asp:TableRow>
             <asp:TableCell BorderColor="Black" BorderStyle="Solid" Font-Bold="true" HorizontalAlign="Center">
@@ -78,6 +78,7 @@
                         <asp:BoundField DataField="LastUpdate" HeaderText="Last Update" SortExpression="LastUpdate" HeaderStyle-Width="15%">
                             <ItemStyle Width="50px"></ItemStyle>
                         </asp:BoundField>
+                                              
                     </Columns>
                 </asp:GridView>
             </ContentTemplate>

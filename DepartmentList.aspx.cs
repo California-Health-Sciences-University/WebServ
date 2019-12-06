@@ -10,18 +10,15 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-
 namespace PDCA_ASPX
 {
-    public partial class PDCAFieldList : System.Web.UI.Page
+    public partial class DepartmentList : System.Web.UI.Page
     {
         public string strConnString = "";
         private PDCAUser PDCATempUser = new PDCAUser();
         protected void Page_Load(object sender, EventArgs e)
         {
-            PDCATempUser = (PDCAUser)Session["PDCAUser"];
-            strConnString = PDCATempUser.strConnectionstring;
+            PDCATempUser = (PDCAUser)Session["PDCAUser"];            
             if (!IsPostBack)
             {
                 LoadGridData();
@@ -30,15 +27,13 @@ namespace PDCA_ASPX
 
         private void LoadGridData()
         {
-            string sQuery = "PDCAFields_select ";
-            gvPDCAFieldList.DataSource = GetData(sQuery);
-            gvPDCAFieldList.DataBind();
+            string sQuery = "Department_select ";
+            gvDepartmentList.DataSource = GetData(sQuery);
+            gvDepartmentList.DataBind();
         }
 
         private DataTable GetData(string query)
         {
-            //string strConnString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-            //string strConnString = "Data Source=4QLJWK2;Initial Catalog=PDCA;Integrated Security=True";
             string strConnString = PDCATempUser.strConnectionstring;
             using (SqlConnection con = new SqlConnection(strConnString))
             {
@@ -83,41 +78,41 @@ namespace PDCA_ASPX
             }
         }
 
-        protected void PDCAFieldGridView_DataBound(object sender, EventArgs e)
+        protected void DepartmentGridView_DataBound(object sender, EventArgs e)
         {
-            for (int i = 0; i < gvPDCAFieldList.Rows.Count; i++)
+            for (int i = 0; i < gvDepartmentList.Rows.Count; i++)
             {
                 // Ignore values that cannot be cast as integer.
                 try
                 {
-                    if ((int)gvPDCAFieldList.DataKeys[i].Value == (int)ViewState["SelectedKey"])
-                        gvPDCAFieldList.SelectedIndex = i;
+                    if ((int)gvDepartmentList.DataKeys[i].Value == (int)ViewState["SelectedKey"])
+                        gvDepartmentList.SelectedIndex = i;
                 }
                 catch { }
             }
         }
 
-        protected void PDCAFieldGridView_Sorting(object sender, GridViewSortEventArgs e)
+        protected void DepartmentGridView_Sorting(object sender, GridViewSortEventArgs e)
         {
-            gvPDCAFieldList.SelectedIndex = -1;
+            gvDepartmentList.SelectedIndex = -1;
         }
 
         protected void grdData_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            gvPDCAFieldList.PageIndex = e.NewPageIndex;
+            gvDepartmentList.PageIndex = e.NewPageIndex;
             LoadGridData();
         }
 
-        protected void gvPDCAFieldList_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvDepartmentList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (gvPDCAFieldList.SelectedIndex >= 0)
-                ViewState["SelectedKey"] = gvPDCAFieldList.SelectedValue;
+            if (gvDepartmentList.SelectedIndex >= 0)
+                ViewState["SelectedKey"] = gvDepartmentList.SelectedValue;
             else
                 ViewState["SelectedKey"] = null;
-            foreach (GridViewRow row1 in gvPDCAFieldList.Rows)
+            foreach (GridViewRow row1 in gvDepartmentList.Rows)
             {
                 ImageButton IB2 = row1.FindControl("ClickImage") as ImageButton;
-                if (row1 == gvPDCAFieldList.SelectedRow)
+                if (row1 == gvDepartmentList.SelectedRow)
                 {
                     IB2.ImageUrl = "~/images/btn_check_on_selected.png";
                 }
@@ -128,7 +123,7 @@ namespace PDCA_ASPX
                 }
             }
 
-            GridViewRow srow = gvPDCAFieldList.SelectedRow;
+            GridViewRow srow = gvDepartmentList.SelectedRow;
             //ImageButton IB1 = srow.FindControl("ClickImage") as ImageButton;
             //IB1.ImageUrl = "~/images/btn_check_on_selected.png";
             //string customerId = gvSONISStudents.DataKeys[e.Row.RowIndex].Value.ToString();
@@ -145,7 +140,5 @@ namespace PDCA_ASPX
         {
             LoadGridData();
         }
-
-        
     }
 }

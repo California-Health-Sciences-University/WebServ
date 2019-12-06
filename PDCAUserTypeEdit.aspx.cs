@@ -11,9 +11,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+
 namespace PDCA_ASPX
 {
-    public partial class PDCAFieldEdit : System.Web.UI.Page
+    public partial class PDCAUserTypeEdit : System.Web.UI.Page
     {
         private SqlConnection connection = new SqlConnection();
         private PDCAUser PDCATempUser = new PDCAUser();
@@ -25,7 +26,7 @@ namespace PDCA_ASPX
             }
             else
             {
-                this.lblFieldID.Text = Request.QueryString["PDCAFieldID"];
+                this.lblPDCAUserTypeID.Text = Request.QueryString["PDCAUserTypeID"];
                 LoadData();
             }
         }
@@ -34,9 +35,9 @@ namespace PDCA_ASPX
         {
             //connection.ConnectionString = "Data Source = 4QLJWK2; Initial Catalog = PDCA; Integrated Security = True";
             connection.ConnectionString = PDCATempUser.strConnectionstring;
-            string sQuery = "PDCAFields_select ";
+            string sQuery = "PDCAUserType_select ";
 
-            sQuery += "@pdcafieldid =" + this.lblFieldID.Text + " ";
+            sQuery += "@PDCAUserTypeid =" + this.lblPDCAUserTypeID.Text + " ";
             connection.Open();
             using (connection)
             {
@@ -46,9 +47,8 @@ namespace PDCA_ASPX
                 {
                     while (reader.Read())
                     {
-                        this.lblFieldID.Text = reader.GetInt32(0).ToString();
-                        this.lblFieldName.Text = reader.GetString(1);
-                        this.lblTitle.Text = reader.GetString(3);
+                        this.lblPDCAUserTypeID.Text = reader.GetInt32(0).ToString();
+                        this.txtName.Text = reader.GetString(1);
                         this.txtDescription.Text = reader.GetString(2);
                     }
                 }
@@ -65,14 +65,14 @@ namespace PDCA_ASPX
             connection.ConnectionString = PDCATempUser.strConnectionstring;
             string SQLQuery = "";
             connection.Open();
-                 SQLQuery = "PDCAField_Update @pdcafieldid =" + this.lblFieldID.Text + ",";
+            SQLQuery = "PDCAUserType_Update @PDCAUserTypeid =" + this.lblPDCAUserTypeID.Text + ",";
+            SQLQuery += " @name= '" + this.txtName.Text.Replace("'", "''") + "'";
+            SQLQuery += " ,@description= '" + this.txtDescription.Text.Replace("'", "''") + "'";
 
-            SQLQuery += " @description= '" + this.txtDescription.Text.Replace("'","''") + "'";
-          
             SqlCommand commanda = new SqlCommand("", connection);
             commanda.CommandText = SQLQuery;
             SqlDataReader readera = commanda.ExecuteReader();
-            Response.Redirect("~/pdcafieldlist.aspx");
+            Response.Redirect("~/PDCAUserTypelist.aspx");
         }
     }
 }
